@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mode Opératoire OCP</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #046d63;
+            --secondary-color: #d4a373;
+            --success-color: #28a745;
+            --background-color: #f8f9fa;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #cfe9d1;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .header img {
+    width: 100px; /* Ajustez la taille selon vos besoins */
+    height: auto; /* Conserve les proportions de l'image */
+    border-radius: 50%; /* Rend l'image circulaire */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ajoute un ombrage doux */
+    border: 2px solid #ddd; /* Ajoute une bordure fine */
+    transition: transform 0.3s ease; /* Animation au survol */
+}
+
+.header img:hover {
+    transform: scale(1.1); /* Agrandit légèrement l'image au survol */
+}
+
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+        }
+
+        .section-card {
+            background: #fff;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-add {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .btn-add:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .description-section textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        .btn-submit {
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1.1rem;
+            width: 100%;
+            transition: var(--transition);
+            margin-top: 2rem;
+        }
+
+        .btn-submit:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+        }
+
+        .animated-input {
+            transition: transform 0.3s ease;
+        }
+
+        .animated-input:focus {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="OCP.png" alt="OCP Logo">
+            <h1>Mode Opératoire</h1>
+        </div>
+
+        <form id="modeOperatoireForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="mode-numero">Mode Opératoire N° :</label>
+                    <div class="input-with-icon">
+                        <input type="text" id="mode-numero" class="animated-input" placeholder="Ex: MO-2024-001">
+                        <i class="fas fa-hashtag input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Activité :</label>
+                    <div class="input-with-icon">
+                        <input type="text" value="Production acide sulfurique PS4" disabled class="animated-input">
+                        <i class="fas fa-industry input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="tache">Tâche :</label>
+                    <div class="input-with-icon">
+                        <input type="text" id="tache" class="animated-input" placeholder="Décrivez la tâche">
+                        <i class="fas fa-tasks input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="duree">Durée en min :</label>
+                    <div class="input-with-icon">
+                        <input type="text" id="duree" class="animated-input" placeholder="Ex: 10 min">
+                        <i class="fas fa-clock input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ressources">Ressources humaines :</label>
+                    <div class="input-with-icon">
+                        <input type="number" id="ressources" class="animated-input" placeholder="Nombre de personnes">
+                        <i class="fas fa-users input-icon"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="posteTravail">Poste de travail :</label>
+                    <div class="input-with-icon">
+                        <input type="text" id="posteTravail" class="animated-input" placeholder="circuit acide">
+                        <i class="fas fa-users input-icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-hard-hat"></i> EPI Obligatoire</h2>
+                    <button type="button" class="btn-add" onclick="addRow('epiTable')">
+                        <i class="fas fa-plus"></i> Ajouter
+                    </button>
+                </div>
+                <table id="epiTable">
+                    <thead>
+                        <tr>
+                            <th>Élément</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-tools"></i> Matériels</h2>
+                    <button type="button" class="btn-add" onclick="addRow('materielsTable')">
+                        <i class="fas fa-plus"></i> Ajouter
+                    </button>
+                </div>
+                <table id="materielsTable">
+                    <thead>
+                        <tr>
+                            <th>Élément</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-clipboard-check"></i> Équipement à vérifier</h2>
+                    <button type="button" class="btn-add" onclick="addRow('equipementTable')">
+                        <i class="fas fa-plus"></i> Ajouter
+                    </button>
+                </div>
+                <table id="equipementTable">
+                    <thead>
+                        <tr>
+                            <th>Élément</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-flask"></i> Matières</h2>
+                    <button type="button" class="btn-add" onclick="addRow('matieresTable')">
+                        <i class="fas fa-plus"></i> Ajouter
+                    </button>
+                </div>
+                <table id="matieresTable">
+                    <thead>
+                        <tr>
+                            <th>Élément</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> Risques</h2>
+                    <button type="button" class="btn-add" onclick="addRow('risquesTable')">
+                        <i class="fas fa-plus"></i> Ajouter
+                    </button>
+                </div>
+                <table id="risquesTable">
+                    <thead>
+                        <tr>
+                            <th>Élément</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-shield-alt"></i> Moyens de prévention</h2>
+                    <button type="button" class="btn-add" onclick="addRow('moyensTable')">
+                        <i class="fas fa-plus"></i> Ajouter
+                    </button>
+                </div>
+                <table id="moyensTable">
+                    <thead>
+                        <tr>
+                            <th>Élément</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-list-ol"></i> Description de l'opération</h2>
+                </div>
+                <textarea placeholder="Décrivez les étapes de l'opération en détail..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-paper-plane"></i> Exporter en PDF
+            </button>
+            
+
+        </form>
+    </div>
+
+    <script>
+        function addRow(tableId) {
+            const table = document.getElementById(tableId);
+            const newRow = table.insertRow(-1);
+            const cell = newRow.insertCell(0);
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'animated-input';
+            input.placeholder = 'Ajoutez un élément...';
+            input.style.width = '100%';
+            input.style.border = 'none';
+            input.style.padding = '0.5rem';
+            input.style.background = 'transparent';
+            
+            cell.appendChild(input);
+            input.focus();
+        }
+        // Fonction pour convertir une image en base64
+        function getBase64Image(img) {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            return canvas.toDataURL("image/png").split(',')[1];
+        }
+
+        document.getElementById('modeOperatoireForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const { jsPDF } = window.jspdf;
+            // Créer le PDF en format A4
+            const doc = new jsPDF({
+                orientation: "portrait",
+                unit: "mm",
+                format: "a4"
+            });
+
+            // Définir les couleurs de la charte graphique
+            const colors = {
+                primary: '#2e8b57',
+                secondary: '#000000',
+                text: '#4d4d4d',
+                lightGrey: '#eceff1'
+            };
+
+            // Fonction pour obtenir la valeur d'un élément
+            function getValueById(id) {
+                const element = document.getElementById(id);
+                return element ? element.value : '';
+            }
+
+            // Fonction pour ajouter du texte stylisé
+            function addStyledText(text, x, y, options = {}) {
+                const defaultOptions = {
+                    fontSize: 12,
+                    color: colors.text,
+                    font: "helvetica",
+                    style: "normal",
+                    maxWidth: 170
+                };
+                const finalOptions = { ...defaultOptions, ...options };
+                
+                doc.setFont(finalOptions.font, finalOptions.style);
+                doc.setFontSize(finalOptions.fontSize);
+                doc.setTextColor(finalOptions.color);
+                
+                const lines = doc.splitTextToSize(text, finalOptions.maxWidth);
+                doc.text(lines, x, y);
+                return y + (lines.length * (finalOptions.fontSize / 2));
+            }
+
+            // Fonction pour ajouter une section
+            function addSection(title, content, startY) {
+                // Ajouter une nouvelle page si nécessaire
+                if (startY > 270) {
+                    doc.addPage();
+                    startY = 20;
+                }
+
+                // Ajouter le titre de la section
+                doc.setFillColor(colors.primary);
+                doc.rect(10, startY - 5, 190, 10, 'F');
+                addStyledText(title, 14, startY + 3, {
+                    fontSize: 12,
+                    color: '#FFFFFF',
+                    style: 'bold'
+                });
+
+                // Ajouter le contenu
+                let yPos = startY + 10;
+                content.forEach(item => {
+                    yPos = addStyledText('• ' + item, 14, yPos + 5, {
+                        fontSize: 11,
+                        color: colors.text
+                    });
+                });
+
+                return yPos;
+            }
+
+            // Ajouter l'en-tête
+            try {
+                const logo = document.querySelector('.header img');
+                if (logo) {
+                    const logoData = getBase64Image(logo);
+                    doc.addImage(logoData, 'PNG', 10, 10, 30, 30);
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement du logo:', error);
+            }
+
+            // Titre principal
+            let yPosition = 15;
+            yPosition = addStyledText('Mode Opératoire', 70, yPosition, {
+                fontSize: 24,
+                color: colors.primary,
+                style: 'bold'
+            });
+
+            // Informations principales dans un cadre
+            doc.setFillColor(colors.lightGrey);
+            doc.rect(300, yPosition + 5, 190, 40, 'F');
+            
+            yPosition += 10;
+            yPosition = addStyledText('Mode Opératoire N°: ' + getValueById('mode-numero'), 14, yPosition + 5);
+            yPosition = addStyledText('Activité: Production acide sulfurique PS4', 14, yPosition + 5);
+            yPosition = addStyledText('Tâche: ' + getValueById('tache'), 14, yPosition + 5);
+            yPosition = addStyledText('Durée en min: ' + getValueById('duree'), 14, yPosition + 5);
+            yPosition = addStyledText('Ressources humaines: ' + getValueById('ressources'), 14, yPosition + 5);
+            yPosition = addStyledText('Poste de travail: ' + getValueById('posteTravail'), 14, yPosition + 5);
+
+            // Fonction pour récupérer le contenu d'un tableau
+            function getTableContent(tableId) {
+                const table = document.getElementById(tableId);
+                let content = [];
+                const inputs = table.querySelectorAll('input');
+                inputs.forEach(input => {
+                    if (input.value.trim()) {
+                        content.push(input.value.trim());
+                    }
+                });
+                return content;
+            }
+
+            // Ajouter les sections
+            yPosition += 10;
+            const sections = [
+                { title: "EPI Obligatoire", id: "epiTable" },
+                { title: "Matériels", id: "materielsTable" },
+                { title: "Équipement à vérifier", id: "equipementTable" },
+                { title: "Matières", id: "matieresTable" },
+                { title: "Risques", id: "risquesTable" },
+                { title: "Moyens de prévention", id: "moyensTable" }
+            ];
+
+            sections.forEach(section => {
+                const content = getTableContent(section.id);
+                yPosition = addSection(section.title, content, yPosition + 10);
+            });
+
+            // Ajouter la description
+            yPosition += 10;
+            if (yPosition > 270) {
+                doc.addPage();
+                yPosition = 20;
+            }
+
+            doc.setFillColor(colors.primary);
+            doc.rect(10, yPosition - 5, 190, 10, 'F');
+            addStyledText("Description de l'opération", 14, yPosition + 3, {
+                fontSize: 12,
+                color: '#FFFFFF',
+                style: 'bold'
+            });
+
+            const description = document.querySelector('textarea').value;
+            yPosition = addStyledText(description, 14, yPosition + 10, {
+                fontSize: 11,
+                color: colors.text,
+                maxWidth: 180
+            });
+
+            // Ajouter le pied de page sur chaque page
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(10);
+                doc.setTextColor(colors.secondary);
+                doc.text(`Page ${i} sur ${pageCount}`, 190, 287, { align: 'right' });
+                
+                // Ajouter la date
+                const date = new Date().toLocaleDateString('fr-FR');
+                doc.text(`Date: ${date}`, 10, 287);
+            }
+
+            // Sauvegarder le PDF
+            doc.save('mode_operatoire_PS4.pdf');
+        });
+    </script>
+</body>
+</html>
