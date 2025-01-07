@@ -215,6 +215,11 @@
         .animated-input:focus {
             transform: scale(1.02);
         }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem; }
     </style>
 </head>
 <body>
@@ -235,10 +240,18 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Activité :</label>
+                    <label for="activite">Activité :</label>
                     <div class="input-with-icon">
-                        <input type="text" value="Production acide sulfurique PS4" disabled class="animated-input">
+                        <input type="text" id="activite" class="animated-input" placeholder="Ex: Production acide sulfurique PS4">
                         <i class="fas fa-industry input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="posteTravail">Poste de travail :</label>
+                    <div class="input-with-icon">
+                        <input type="text" id="posteTravail" class="animated-input" placeholder="Ex: Circuit acide">
+                        <i class="fas fa-map-marker-alt input-icon"></i>
                     </div>
                 </div>
 
@@ -251,25 +264,18 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="duree">Durée en min :</label>
-                    <div class="input-with-icon">
-                        <input type="text" id="duree" class="animated-input" placeholder="Ex: 10 min">
-                        <i class="fas fa-clock input-icon"></i>
-                    </div>
-                </div>
-
-                <div class="form-group">
                     <label for="ressources">Ressources humaines :</label>
                     <div class="input-with-icon">
                         <input type="number" id="ressources" class="animated-input" placeholder="Nombre de personnes">
                         <i class="fas fa-users input-icon"></i>
                     </div>
                 </div>
+
                 <div class="form-group">
-                    <label for="posteTravail">Poste de travail :</label>
+                    <label for="duree">Durée en min :</label>
                     <div class="input-with-icon">
-                        <input type="text" id="posteTravail" class="animated-input" placeholder="circuit acide">
-                        <i class="fas fa-users input-icon"></i>
+                        <input type="text" id="duree" class="animated-input" placeholder="Ex: 10 min">
+                        <i class="fas fa-clock input-icon"></i>
                     </div>
                 </div>
             </div>
@@ -435,7 +441,8 @@
                 primary: '#2e8b57',
                 secondary: '#000000',
                 text: '#4d4d4d',
-                lightGrey: '#eceff1'
+                lightGrey: '#eceff1',
+                borderGrey:'#e0e0e0'
             };
 
             // Fonction pour obtenir la valeur d'un élément
@@ -512,17 +519,58 @@
                 style: 'bold'
             });
 
-            // Informations principales dans un cadre
-            doc.setFillColor(colors.lightGrey);
-            doc.rect(300, yPosition + 5, 190, 40, 'F');
-            
-            yPosition += 10;
-            yPosition = addStyledText('Mode Opératoire N°: ' + getValueById('mode-numero'), 14, yPosition + 5);
-            yPosition = addStyledText('Activité: Production acide sulfurique PS4', 14, yPosition + 5);
-            yPosition = addStyledText('Tâche: ' + getValueById('tache'), 14, yPosition + 5);
-            yPosition = addStyledText('Durée en min: ' + getValueById('duree'), 14, yPosition + 5);
-            yPosition = addStyledText('Ressources humaines: ' + getValueById('ressources'), 14, yPosition + 5);
-            yPosition = addStyledText('Poste de travail: ' + getValueById('posteTravail'), 14, yPosition + 5);
+            // Fonction pour styliser le texte avec label en gras
+function addStyledField(label, value, x, y) {
+    // Label en gras et en couleur primaire
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.setTextColor(colors.primary);
+    doc.text(label, x, y);
+
+    // Valeur en style normal
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(colors.text);
+    doc.text(value, x + 50, y);
+
+    return y + 8;
+}
+
+// Cadre principal pour les informations
+yPosition = 40;
+doc.setFillColor(colors.lightGrey);
+doc.rect(10, yPosition, 190, 60, 'F');
+
+// Bordure du cadre
+doc.setDrawColor(colors.primary);
+doc.setLineWidth(0.5);
+doc.rect(10, yPosition, 190, 60);
+
+// En-tête du cadre
+doc.setFillColor(colors.primary);
+doc.rect(10, yPosition, 190, 8, 'F');
+doc.setTextColor('#FFFFFF');
+doc.setFont("helvetica", "bold");
+doc.setFontSize(12);
+doc.text('Informations Générales', 15, yPosition + 6);
+
+// Contenu du cadre
+yPosition += 15;
+const fields = [
+    { label: 'Mode Opératoire N° :', value: getValueById('mode-numero') },
+    { label: 'Activité :', value: getValueById('activite') },
+    { label: 'Poste de travail :', value: getValueById('posteTravail') },
+    { label: 'Tâche :', value: getValueById('tache') },
+    { label: 'Ressources humaines :', value: getValueById('ressources') },
+    { label: 'Durée en min :', value: getValueById('duree') }
+];
+fields.forEach((field, index) => {
+    // Alternance de couleurs de fond pour les lignes
+    if (index % 2 === 1) {
+        doc.setFillColor('#FFFFFF');
+        doc.rect(11, yPosition - 4, 188, 8, 'F');
+    }
+    yPosition = addStyledField(field.label, field.value, 15, yPosition);
+});
 
             // Fonction pour récupérer le contenu d'un tableau
             function getTableContent(tableId) {
@@ -591,6 +639,13 @@
             // Sauvegarder le PDF
             doc.save('mode_operatoire_PS4.pdf');
         });
+        
+
+
+
+
+
+        
     </script>
 </body>
 </html>
